@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#5546d7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="description" content="改行のないURLの羅列からWebページのサムネイル一覧を作成">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-180.png">
+<title>Link Tiles — URLプレビュー一覧</title>
+<style>
+:root{color-scheme:light;--bg:#f5f6fb;--panel:#fff;--ink:#202236;--muted:#666d83;--line:#e1e4ef;--accent:#5546d7;--soft:#eeecff;--bad:#a52b3a;--good:#18794e}
+*{box-sizing:border-box}html{background:var(--bg);-webkit-text-size-adjust:100%}body{margin:0;background:linear-gradient(#f4f3ff,#f7f8fb 260px);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}button,textarea,input,select{font:inherit}button{touch-action:manipulation;cursor:pointer}.wrap{max-width:1450px;margin:auto;padding:calc(16px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right)) calc(28px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left))}header{display:flex;gap:12px;align-items:center;margin:4px 0 18px}.logo{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;color:white;font-weight:850;font-size:20px;background:linear-gradient(135deg,#7f70ff,#4938bf);flex:none}h1{font-size:clamp(23px,4vw,31px);letter-spacing:-.7px;margin:0;line-height:1.15}.tag{font-size:13px;color:var(--muted);margin-top:5px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:clamp(13px,2.4vw,22px);box-shadow:0 6px 23px #1b22500b}.label{font-size:15px;font-weight:750;margin:0 0 10px;display:flex;align-items:center;gap:8px}.step{font-size:11px;color:var(--accent);background:var(--soft);border-radius:6px;padding:4px 7px}textarea{display:block;width:100%;min-height:150px;max-height:45vh;resize:vertical;border:1px solid #d9ddeb;border-radius:12px;background:#fcfcff;padding:13px;color:var(--ink);font-size:14px;line-height:1.55;outline:none}textarea:focus,input:focus,select:focus{border-color:#9287f6;box-shadow:0 0 0 3px #5546d71a}.hint{font-size:12px;line-height:1.6;color:var(--muted);margin-top:8px}.actions,.toolbar,.status{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.actions{margin-top:13px}.btn{background:white;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 13px;min-height:42px;font-weight:700;font-size:14px}.btn.primary{background:var(--accent);color:white;border-color:var(--accent);min-width:110px}.btn:disabled{opacity:.55;cursor:wait}.check{display:flex;align-items:center;gap:7px;margin-left:auto;font-size:13px;color:var(--muted)}input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}.status{margin:18px 2px 10px;min-height:31px}.count{font-size:19px;font-weight:850;white-space:nowrap}.message{font-size:13px;color:var(--muted);line-height:1.5}.toolbar{margin:10px 0 15px}.toolbar.hidden{display:none}.search{position:relative;flex:1;min-width:165px}.search input{width:100%;min-height:42px;border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:#fff}.toolbar select{min-height:42px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:8px 10px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:13px;align-items:start}.card{background:white;min-width:0;overflow:hidden;border-radius:14px;border:1px solid var(--line);box-shadow:0 3px 12px #18204b08}.thumb{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,#ecebff,#edf0f6);display:grid;place-items:center;overflow:hidden}.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.placeholder{max-width:90%;padding:10px;text-align:center;font-size:24px;font-weight:850;color:#8886b2;overflow-wrap:anywhere}.photostate{position:absolute;left:7px;right:7px;bottom:6px;padding:4px 7px;border-radius:6px;background:#ffffffdc;color:#565b73;font-size:11px;text-align:center}.main{padding:10px 11px 12px}.hostrow{display:flex;align-items:center;gap:7px;min-width:0}.index{background:var(--soft);color:var(--accent);font-size:11px;font-weight:800;padding:4px 6px;border-radius:5px;flex:none}.host{font-size:13px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.url{margin-top:6px;color:var(--muted);font-size:11px;line-height:1.45;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:30px}.cardactions{display:flex;gap:7px;margin-top:10px}.cardactions a,.cardactions button{flex:1;text-align:center;border:1px solid var(--line);border-radius:8px;padding:8px 5px;font-size:12px;font-weight:700;text-decoration:none;background:#fff;color:var(--ink);min-height:34px}.cardactions a{background:#f3f1ff;border-color:#e6e1ff;color:#4c40c1}.card.hidden{display:none}.empty{padding:28px 16px;border:1px dashed #cfd3e1;border-radius:14px;text-align:center;line-height:1.7;color:var(--muted);background:#ffffff8c}.hidden{display:none!important}.notice{font-size:12px;line-height:1.65;background:#efeff7;border-radius:11px;color:#686e82;padding:12px;margin-top:20px}.error{color:var(--bad)!important}.ok{color:var(--good)!important}@media(max-width:560px){.wrap{padding-left:10px;padding-right:10px}.logo{width:42px;height:42px}.tag{font-size:12px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.main{padding:8px}.host{font-size:12px}.url{font-size:10px}.cardactions{gap:4px}.cardactions a,.cardactions button{font-size:10px;padding:7px 3px}.placeholder{font-size:19px}.check{margin-left:0;width:100%}.count{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="logo">LT</div><div><h1>Link Tiles</h1><div class="tag">URLの羅列を、サムネイルのタイル一覧に。</div></div></header>
+<section class="panel">
+  <div class="label"><span class="step">STEP 1</span> URLを貼り付ける</div>
+  <textarea id="inputUrls" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="https://example.comhttps://www.wikipedia.orghttps://www.apple.com …"></textarea>
+  <div class="hint">改行や空白がなくても、連続する http://・https:// を検出して分割します。行区切り、空白区切りにも対応。数百件までを想定しています。</div>
+  <div class="actions">
+    <button type="button" class="btn primary" id="getBtn">取得</button>
+    <button type="button" class="btn" id="sampleBtn">サンプル</button>
+    <button type="button" class="btn" id="clearBtn">クリア</button>
+    <label class="check"><input id="dedupe" type="checkbox" checked> 重複を除外</label>
+  </div>
+</section>
+<div class="status" aria-live="polite"><div id="count" class="count">0 件</div><div id="status" class="message">URLを貼り付けて「取得」を押してください。</div></div>
+<div class="toolbar hidden" id="toolbar">
+  <div class="search"><input type="search" id="filter" placeholder="URL・ドメインを検索" autocomplete="off"></div>
+  <select id="size" aria-label="カードサイズ"><option value="190">小</option><option value="250" selected>標準</option><option value="320">大</option></select>
+  <button type="button" class="btn" id="retryBtn">失敗分を再取得</button>
+  <button type="button" class="btn" id="saveBtn">URL一覧を保存</button>
+</div>
+<main class="grid" id="grid" aria-label="リンクプレビュー一覧"></main>
+<div class="empty" id="empty">取得したプレビューがここに並びます。<br>URLを貼り付けて「取得」を押してください。</div>
+<div class="notice"><strong>サムネイルについて：</strong>プレビュー画像は外部サービス Thum.io が生成します。貼り付けたURLが同サービスへ送信されます。非公開URL、ログイン必須URL、個人情報を含むURLは入力しないでください。相手サイトの制限やサービスの利用制限で画像が取得できない場合があります。<br><br><strong>iPadでボタンが反応しない場合：</strong>「ファイル」アプリのプレビューではなく、HTTPSで公開したWebページをSafariで開いてください。ローカルHTMLのプレビューではJavaScriptが実行されない場合があります。</div>
+</div>
+<script>
+(function () {
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var input = $('inputUrls'), grid = $('grid'), count = $('count'), status = $('status');
+  var cards = [], allUrls = [], imageObserver = null;
+  var finished = 0, failed = 0;
+
+  function setStatus(message, kind) {
+    status.textContent = message;
+    status.className = 'message' + (kind ? ' ' + kind : '');
+  }
+
+  function splitUrls(raw) {
+    raw = String(raw || '').replace(/[\u200B-\u200D\uFEFF]/g, '');
+    var starts = [], rx = /https?:\/\/|www\./ig, match;
+    while ((match = rx.exec(raw)) !== null) {
+      var token = match[0].toLowerCase();
+      var pos = match.index;
+      if (token === 'www.' && pos > 0 && raw.slice(Math.max(0, pos - 3), pos) === '://') continue;
+      starts.push(pos);
+    }
+    var out = [];
+    for (var i=0; i<starts.length; i++) {
+      var piece = raw.slice(starts[i], i+1 < starts.length ? starts[i+1] : raw.length).trim();
+      piece = piece.replace(/[\s,，、;；|]+$/g, '').replace(/[。！!？?"'<>]+$/g, '').trim();
+      if (!piece) continue;
+      if (/^www\./i.test(piece)) piece = 'https://' + piece;
+      try {
+        var u = new URL(piece);
+        if ((u.protocol !== 'http:' && u.protocol !== 'https:') || !u.hostname) continue;
+        // Trailing punctuation commonly introduced by copied prose.
+        if (/[.,;，、。]$/.test(u.pathname)) {
+          var clean = piece.replace(/[.,;，、。]+$/, '');
+          u = new URL(clean);
+        }
+        out.push({url:u.href, host:u.hostname.replace(/^www\./i, '')});
+      } catch (e) { /* skip non-URL text */ }
+    }
+    if ($('dedupe').checked) {
+      var seen = Object.create(null);
+      out = out.filter(function(item){
+        var key = item.url.replace(/\/$/, '').toLowerCase();
+        if (seen[key]) return false;
+        seen[key] = true; return true;
+      });
+    }
+    return out;
+  }
+
+  function screenshotUrl(url) {
+    // Thum.io officially supports passing the target URL as the ?url= parameter.
+    return 'https://image.thum.io/get/width/480/crop/675/allowJPG/noanimate/?url=' + encodeURIComponent(url);
+  }
+  function faviconUrl(url) {
+    return 'https://www.google.com/s2/favicons?domain=' + encodeURIComponent(new URL(url).hostname) + '&sz=128';
+  }
+  function updateCounts() {
+    var loaded = cards.filter(function(c){ return c.dataset.state === 'loaded' || c.dataset.state === 'icon'; }).length;
+    var failCount = cards.filter(function(c){ return c.dataset.state === 'failed'; }).length;
+    var visible = cards.filter(function(c){ return !c.classList.contains('hidden'); }).length;
+    count.textContent = allUrls.length + ' 件';
+    if (allUrls.length) setStatus(visible + ' 件表示 · 画像取得 ' + loaded + ' 件' + (failCount ? ' · 失敗 ' + failCount + ' 件' : ''), failCount ? '' : '');
+  }
+  function makeCard(item, index) {
+    var card = document.createElement('article'); card.className='card'; card.dataset.url=item.url.toLowerCase(); card.dataset.host=item.host.toLowerCase(); card.dataset.state='waiting'; card._url=item.url;
+    var thumb = document.createElement('div'); thumb.className='thumb';
+    var placeholder = document.createElement('div'); placeholder.className='placeholder'; placeholder.textContent=item.host.slice(0,2).toUpperCase();
+    var img = document.createElement('img'); img.alt='Webページのプレビュー：'+item.host; img.decoding='async'; img.loading='lazy'; img.style.display='none'; img.referrerPolicy='no-referrer';
+    var photoState = document.createElement('div'); photoState.className='photostate'; photoState.textContent='画像待機中';
+    thumb.appendChild(placeholder); thumb.appendChild(img); thumb.appendChild(photoState);
+    var main=document.createElement('div'); main.className='main'; var row=document.createElement('div'); row.className='hostrow';
+    var num=document.createElement('span'); num.className='index'; num.textContent=String(index+1).padStart(2,'0');
+    var host=document.createElement('div'); host.className='host'; host.textContent=item.host; host.title=item.host; row.append(num,host);
+    var urltext=document.createElement('div'); urltext.className='url'; urltext.textContent=item.url; urltext.title=item.url;
+    var actions=document.createElement('div'); actions.className='cardactions';
+    var open=document.createElement('a'); open.href=item.url; open.target='_blank'; open.rel='noopener noreferrer'; open.textContent='ページを開く';
+    var retry=document.createElement('button'); retry.type='button'; retry.textContent='再取得';
+    retry.addEventListener('click', function(){ loadImage(card, true); });
+    actions.append(open,retry); main.append(row,urltext,actions); card.append(thumb,main);
+    card._img=img; card._placeholder=placeholder; card._photoState=photoState;
+    img.addEventListener('load', function(){
+      clearTimeout(card._imageTimeout);
+      if (img.dataset.kind === 'icon') { card.dataset.state='icon'; photoState.textContent='サイトアイコン'; photoState.style.display='block'; img.style.objectFit='contain'; img.style.padding='34px'; placeholder.style.display='none'; }
+      else { card.dataset.state='loaded'; photoState.style.display='none'; placeholder.style.display='none'; }
+      updateCounts();
+    });
+    img.addEventListener('error', function(){
+      clearTimeout(card._imageTimeout);
+      if (img.dataset.kind === 'screen') {
+        img.dataset.kind='icon'; img.style.display='block'; img.style.objectFit='contain'; img.style.padding='34px'; photoState.textContent='アイコンを取得中…'; photoState.style.display='block';
+        img.src=faviconUrl(item.url); armImageTimeout(card, 'icon', 12000);
+      } else {
+        card.dataset.state='failed'; img.style.display='none'; placeholder.style.display='grid'; photoState.textContent='画像を取得できません'; photoState.style.display='block'; updateCounts();
+      }
+    });
+    return card;
+  }
+  function armImageTimeout(card, kind, ms) {
+    clearTimeout(card._imageTimeout);
+    card._imageTimeout = setTimeout(function(){
+      if (card.dataset.state !== 'loading' || card._img.dataset.kind !== kind) return;
+      if (kind === 'screen') {
+        card._img.dataset.kind = 'icon';
+        card._photoState.textContent = '画像が遅いためアイコンに切替…';
+        card._img.src = faviconUrl(card._url);
+        armImageTimeout(card, 'icon', 12000);
+      } else {
+        card.dataset.state = 'failed';
+        card._img.style.display = 'none';
+        card._placeholder.style.display = 'grid';
+        card._photoState.textContent = '画像を取得できません';
+        card._photoState.style.display = 'block';
+        updateCounts();
+      }
+    }, ms);
+  }
+  function loadImage(card, force) {
+    if (!card || !card.isConnected) return;
+    if (!force && (card.dataset.state === 'loading' || card.dataset.state === 'loaded' || card.dataset.state === 'icon')) return;
+    clearTimeout(card._imageTimeout);
+    card.dataset.state='loading'; card._photoState.textContent='サムネイル取得中…'; card._photoState.style.display='block';
+    card._img.style.display='block'; card._img.dataset.kind='screen';
+    // Bust the browser cache on manual retry only.
+    card._img.src=screenshotUrl(card._url) + (force ? '&retry=' + Date.now() : '');
+    armImageTimeout(card, 'screen', 35000);
+    updateCounts();
+  }
+  function rebuild() {
+    try {
+      setStatus('URLを解析しています…');
+      var parsed=splitUrls(input.value);
+      grid.replaceChildren(); cards=[]; allUrls=parsed.map(function(x){return x.url;}); finished=0; failed=0;
+      $('toolbar').classList.toggle('hidden', parsed.length===0);
+      $('empty').classList.toggle('hidden', parsed.length>0);
+      if (!parsed.length) {
+        count.textContent='0 件';
+        setStatus(input.value.trim() ? 'URLを検出できませんでした。http:// または https:// を含むURLを確認してください。' : '先にURLを貼り付けてください。', input.value.trim() ? 'error' : '');
+        return;
+      }
+      var fragment=document.createDocumentFragment();
+      parsed.forEach(function(item,i){ var c=makeCard(item,i); cards.push(c); fragment.appendChild(c); });
+      grid.appendChild(fragment);
+      // First few are requested immediately so pressing the button gives visible feedback.
+      cards.slice(0, Math.min(4,cards.length)).forEach(function(c){ loadImage(c,false); });
+      if ('IntersectionObserver' in window) {
+        if (imageObserver) imageObserver.disconnect();
+        imageObserver = new IntersectionObserver(function(entries){
+          entries.forEach(function(entry){ if (entry.isIntersecting) { imageObserver.unobserve(entry.target); loadImage(entry.target,false); } });
+        }, {rootMargin:'300px 0px'});
+        cards.slice(4).forEach(function(c){ imageObserver.observe(c); });
+      } else {
+        // Older WebViews: native lazy loading remains enabled; schedule image src as user scrolls.
+        cards.slice(4).forEach(function(c){ imageObserver = null; loadImage(c,false); });
+      }
+      applyFilter(); updateCounts();
+    } catch (err) {
+      count.textContent='エラー';
+      setStatus('処理中にエラーが発生しました：' + (err && err.message ? err.message : String(err)), 'error');
+    }
+  }
+  function applyFilter() {
+    var q=$('filter').value.trim().toLowerCase(), visible=0;
+    cards.forEach(function(c){ var show=!q || c.dataset.url.indexOf(q)>=0 || c.dataset.host.indexOf(q)>=0; c.classList.toggle('hidden',!show); if(show) visible++; });
+    if (allUrls.length) setStatus(visible + ' 件表示 · 画像は画面に近づくと順番に取得します' + (cards.some(function(c){return c.dataset.state==='failed';}) ? ' · 失敗分は再取得できます' : ''));
+  }
+  $('getBtn').addEventListener('click', rebuild);
+  $('sampleBtn').addEventListener('click', function(){ input.value='https://www.wikipedia.orghttps://www.apple.comhttps://www.nasa.govhttps://www.mozilla.orghttps://example.com'; rebuild(); });
+  $('clearBtn').addEventListener('click', function(){ input.value=''; $('filter').value=''; if(imageObserver) imageObserver.disconnect(); rebuild(); });
+  $('filter').addEventListener('input', applyFilter);
+  $('size').addEventListener('change', function(){ grid.style.gridTemplateColumns='repeat(auto-fill,minmax(min(100%,'+$('size').value+'px),1fr))'; });
+  $('retryBtn').addEventListener('click', function(){ cards.forEach(function(c){ if(c.dataset.state==='failed') loadImage(c,true); }); });
+  $('saveBtn').addEventListener('click', function(){
+    try {
+      var blob=new Blob([allUrls.join('\n')],{type:'text/plain;charset=utf-8'}), a=document.createElement('a');
+      var objectUrl=URL.createObjectURL(blob); a.href=objectUrl; a.download='link-tiles-urls.txt'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(objectUrl);},1500);
+      setStatus('URL一覧を保存する処理を開始しました。');
+    } catch(e) { setStatus('保存できませんでした。URLをコピーして保存してください。','error'); }
+  });
+  input.addEventListener('keydown',function(e){if((e.metaKey||e.ctrlKey)&&e.key==='Enter') rebuild();});
+  window.addEventListener('error',function(e){setStatus('JavaScriptエラー：'+(e.message||'不明なエラー'),'error');});
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){});});
+  }
+})();
+</script>
+</body>
+</html>
