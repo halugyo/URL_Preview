@@ -1,4 +1,4 @@
-const CACHE_NAME = 'link-tiles-shell-v2';
+const CACHE_NAME = 'link-tiles-shell-v3';
 const APP_FILES = [
   './',
   './index.html',

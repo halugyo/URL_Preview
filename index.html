@@ -24,6 +24,7 @@
   <div class="hint">改行や空白がなくても、連続する http://・https:// を検出して分割します。行区切り、空白区切りにも対応。数百件までを想定しています。</div>
   <div class="actions">
     <button type="button" class="btn primary" id="getBtn">取得</button>
+    <button type="button" class="btn" id="formatBtn">各リンクごとに改行</button>
     <button type="button" class="btn" id="sampleBtn">サンプル</button>
     <button type="button" class="btn" id="clearBtn">クリア</button>
     <label class="check"><input id="dedupe" type="checkbox" checked> 重複を除外</label>
@@ -53,7 +54,7 @@
     status.className = 'message' + (kind ? ' ' + kind : '');
   }
 
-  function splitUrls(raw) {
+  function splitUrls(raw, applyDedupe) {
     raw = String(raw || '').replace(/[\u200B-\u200D\uFEFF]/g, '');
     var starts = [], rx = /https?:\/\/|www\./ig, match;
     while ((match = rx.exec(raw)) !== null) {
@@ -79,7 +80,7 @@
         out.push({url:u.href, host:u.hostname.replace(/^www\./i, '')});
       } catch (e) { /* skip non-URL text */ }
     }
-    if ($('dedupe').checked) {
+    if (applyDedupe !== false && $('dedupe').checked) {
       var seen = Object.create(null);
       out = out.filter(function(item){
         var key = item.url.replace(/\/$/, '').toLowerCase();
@@ -207,6 +208,21 @@
     if (allUrls.length) setStatus(visible + ' 件表示 · 画像は画面に近づくと順番に取得します' + (cards.some(function(c){return c.dataset.state==='failed';}) ? ' · 失敗分は再取得できます' : ''));
   }
   $('getBtn').addEventListener('click', rebuild);
+  $('formatBtn').addEventListener('click', function(){
+    try {
+      var formatted = splitUrls(input.value, false);
+      if (!formatted.length) {
+        setStatus(input.value.trim() ? 'URLを検出できませんでした。http:// または https:// を含むURLを確認してください。' : '先にURLを貼り付けてください。', input.value.trim() ? 'error' : '');
+        return;
+      }
+      input.value = formatted.map(function(item){ return item.url; }).join('\n');
+      count.textContent = formatted.length + ' 件';
+      setStatus(formatted.length + ' 件のURLを、1リンク1行に整形しました。重複も保持しています。「取得」を押すとプレビューを表示します。', 'ok');
+      input.focus();
+    } catch (err) {
+      setStatus('整形中にエラーが発生しました：' + (err && err.message ? err.message : String(err)), 'error');
+    }
+  });
   $('sampleBtn').addEventListener('click', function(){ input.value='https://www.wikipedia.orghttps://www.apple.comhttps://www.nasa.govhttps://www.mozilla.orghttps://example.com'; rebuild(); });
   $('clearBtn').addEventListener('click', function(){ input.value=''; $('filter').value=''; if(imageObserver) imageObserver.disconnect(); rebuild(); });
   $('filter').addEventListener('input', applyFilter);
